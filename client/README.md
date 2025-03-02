@@ -9,3 +9,8 @@
 ### Deployment
 
 - The client side code will be bundled and served as static files from the server
+
+### Notes
+
+- An issue occured where tanstack/router library was not generating the routeTree.gen.ts file in the src directory, in that case run the command to generate it:
+  - `bunx @tanstack/router-cli generate`

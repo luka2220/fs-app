@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import {
   Card,
   CardContent,
@@ -8,20 +7,25 @@ import {
 } from './components/ui/card';
 
 import { api } from './lib/api';
+import { useQuery } from '@tanstack/react-query';
+
+async function getTotalSpent() {
+  // Test a long wait time from the server
+  // await new Promise((r) => setTimeout(r, 5000));
+
+  // Make a request with the hono rpc api client to the expenses route
+  const res = await api.expenses['total-spent'].$get();
+  if (!res.ok) throw new Error('Something went wrong on the server.');
+  return await res.json();
+}
 
 function App() {
-  const [totalSpent, setTotalSpent] = useState(0);
+  const { isPending, error, data } = useQuery({
+    queryKey: ['totalSpent'],
+    queryFn: getTotalSpent,
+  });
 
-  // Get the total expense on every page load
-  useEffect(() => {
-    // Immediatly invoked async function to fetch data from the api
-    (async () => {
-      // Make a request with the hono apr client to the expenses route
-      const res = await api.expenses['total-spent'].$get();
-      const data = await res.json();
-      setTotalSpent(data.total);
-    })();
-  }, []);
+  if (error) return 'An error occurred';
 
   return (
     <>
@@ -32,7 +36,7 @@ function App() {
             <CardDescription>Total amount you have spent</CardDescription>
           </CardHeader>
           <CardContent>
-            <p>${totalSpent}</p>
+            {isPending ? <p>Loading...</p> : <p>${data?.total}</p>}
           </CardContent>
         </Card>
       </main>

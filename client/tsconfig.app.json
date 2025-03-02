@@ -25,7 +25,8 @@
     /* Shadcn Config*/
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@server/*": ["../server/*"] // Add a @server directive to server files
     }
   },
   "include": ["src"]
